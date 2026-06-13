@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Child Abuse (Physical, Emotional, Sexual, Neglect) | MCN Pillitteri | Philippine Law</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        .transition-all { transition: all 0.3s ease; }
+        .recall-mode .reveal-text {
+            background-color: #cbd5e1 !important;
+            color: transparent !important;
+            border-radius: 0.375rem !important;
+            padding: 0 0.25rem !important;
+            cursor: pointer !important;
+            transition: background-color 0.2s, color 0.2s !important;
+            box-shadow: inset 0 0 0 1px #94a3b8 !important;
+            display: inline-block !important;
+        }
+        .recall-mode .reveal-text:hover,
+        .recall-mode .reveal-text.revealed {
+            background-color: #fde047 !important;
+            color: #1e293b !important;
+            box-shadow: none !important;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #b91c1c; border-radius: 8px; }
+        .content-section { animation: fade 0.3s ease; }
+        @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .quiz-feedback-correct { background-color: #dcfce7; border-left: 4px solid #22c55e; }
+        .quiz-feedback-wrong { background-color: #fee2e2; border-left: 4px solid #ef4444; }
+        .locked-section { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
+        .flashcard { background: #fff; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transition: transform 0.2s; cursor: pointer; border: 1px solid #e2e8f0; }
+        .flashcard:hover { transform: translateY(-5px); }
+        .analogy-box { background: #fee2e2; border-left: 8px solid #b91c1c; padding: 1rem; border-radius: 1rem; margin: 1rem 0; }
+        .legal-box { background: #fef3c7; border-left: 8px solid #d97706; padding: 1rem; border-radius: 1rem; margin: 1rem 0; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { abuse: { light: '#fee2e2', DEFAULT: '#b91c1c', dark: '#7f1d1d' } } } }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 h-screen flex flex-col md:flex-row font-sans text-slate-800 overflow-hidden">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-abuse-dark text-white p-4 flex justify-between items-center shadow-md z-30 shrink-0">
+        <button onclick="toggleMobileMenu()" class="text-white focus:outline-none z-40">
+            <i class="fa-solid fa-bars text-2xl"></i>
+        </button>
+        <h1 class="font-bold text-lg absolute left-1/2 transform -translate-x-1/2 pointer-events-none">
+            <i class="fa-solid fa-hand-fist mr-2"></i> Child Abuse
+        </h1>
+        <div class="w-8"></div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar" class="hidden md:flex flex-col w-full md:w-80 bg-white shadow-2xl h-full absolute md:relative z-30 transition-transform duration-300 shrink-0 border-r border-slate-200">
+        <div class="p-6 bg-gradient-to-br from-abuse-dark to-abuse text-white hidden md:block shrink-0">
+            <h1 class="font-black text-2xl tracking-wide"><i class="fa-solid fa-hand-fist mr-2"></i> Child Abuse</h1>
+            <p class="text-sm text-red-200 mt-1 font-medium">Physical · Emotional · Sexual · Neglect · Munchausen by proxy</p>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1 text-sm font-medium">
+                <li><button onclick="showSection('home')" id="btn-home" class="nav-btn w-full text-left px-6 py-3 bg-abuse-light text-abuse-dark border-r-4 border-abuse-dark transition-colors"><i class="fa-solid fa-house w-6 nav-icon"></i><i class="fa-solid fa-lock w-6 hidden"></i> Home / Start</button></li>
+                <li><button onclick="showSection('simple')" id="btn-simple" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-face-smile w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Child Abuse Like You're 5</button></li>
+                <li><button onclick="showSection('definition')" id="btn-definition" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-book-open w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Definition & Epidemiology</button></li>
+                <li><button onclick="showSection('types')" id="btn-types" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-list w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Types of Child Abuse</button></li>
+                <li><button onclick="showSection('clinical')" id="btn-clinical" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-stethoscope w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Clinical Features & Red Flags</button></li>
+                <li><button onclick="showSection('diagnosis')" id="btn-diagnosis" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-microscope w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Diagnosis & Reporting</button></li>
+                <li><button onclick="showSection('management')" id="btn-management" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-hand-holding-medical w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Management & Nursing Care</button></li>
+                <li><button onclick="showSection('prevention')" id="btn-prevention" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-shield-heart w-6 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Prevention & Legal Aspects (RA 7610, RA 9262)</button></li>
+                <li><button onclick="showSection('flashcards')" id="btn-flashcards" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-t border-slate-200 mt-2 locked-section"><i class="fa-solid fa-cards w-6 text-abuse nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Flashcards & Mnemonics</button></li>
+                <li><button onclick="showSection('final_quiz_sec')" id="btn-final_quiz_sec" class="nav-btn w-full text-left px-6 py-3 text-slate-700 hover:bg-slate-50 transition-colors locked-section"><i class="fa-solid fa-graduation-cap w-6 text-amber-500 nav-icon hidden"></i><i class="fa-solid fa-lock w-6 text-slate-400"></i> Final 50‑Item Exam</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="flex-1 h-full overflow-y-auto bg-slate-100 relative w-full">
+        <div class="fixed top-16 md:top-4 right-4 md:right-8 z-40 flex items-center bg-white/90 backdrop-blur px-4 py-3 rounded-full shadow-lg border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors" onclick="toggleRecallMode()">
+            <span class="mr-3 text-sm font-bold text-slate-700 hidden md:inline"><i class="fa-solid fa-brain text-abuse mr-1"></i> Active Recall</span>
+            <button id="recall-toggle" class="w-12 h-6 bg-slate-300 rounded-full relative transition-colors duration-300 focus:outline-none shadow-inner pointer-events-none">
+                <div id="recall-knob" class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform duration-300 shadow"></div>
+            </button>
+        </div>
+
+        <div class="p-4 md:p-8 max-w-6xl mx-auto pb-32">
+            <!-- HOME SECTION -->
+            <section id="home" class="content-section flex flex-col items-center justify-center min-h-[80vh] text-center block">
+                <div class="bg-gradient-to-br from-slate-800 to-abuse-dark text-white rounded-3xl shadow-2xl p-10 md:p-16 w-full relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-10 -mr-10 text-white opacity-5 pointer-events-none"><i class="fa-solid fa-hand-fist text-[20rem]"></i></div>
+                    <div class="relative z-10">
+                        <div class="bg-white/10 backdrop-blur-sm inline-block p-4 rounded-full text-red-300 mb-6 shadow-sm border border-white/20">
+                            <i class="fa-solid fa-hand-holding-heart text-5xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-300 mb-2 uppercase tracking-widest">Maternal & Child Health Nursing</h3>
+                        <h1 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight drop-shadow-md">Child Abuse</h1>
+                        <div class="bg-white/10 backdrop-blur inline-block px-6 py-3 rounded-full mb-10 border border-white/20">
+                            <p class="text-lg text-white font-medium">"All forms of physical and emotional ill‑treatment, sexual abuse, neglect, and exploitation that results in actual or potential harm to the child's health, survival, development, or dignity." – WHO / Philippine RA 7610</p>
+                        </div>
+                        <button onclick="unlockFirstSection()" class="bg-slate-600 hover:bg-slate-500 text-white font-black py-4 px-10 rounded-full shadow-xl transition-transform hover:scale-105 text-lg flex items-center mx-auto focus:outline-none">
+                            Start Learning <i class="fa-solid fa-arrow-right ml-3"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- "Child Abuse Like You're 5" -->
+            <section id="simple" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-abuse pb-3"><i class="fa-solid fa-face-smile text-abuse mr-4"></i> Child Abuse Like You Are 5 Years Old</h2>
+                    <div class="analogy-box">
+                        <p class="text-lg font-bold">🧸 Every child deserves to feel safe, loved, and protected – like a little puppy in a warm home.</p>
+                        <p>• <strong>Physical abuse</strong> – when someone hurts a child's body (hitting, shaking, burning).<br>
+                        • <strong>Emotional abuse</strong> – when someone says mean things that make a child feel sad or scared all the time.<br>
+                        • <strong>Sexual abuse</strong> – when someone touches a child in private parts in a wrong way.<br>
+                        • <strong>Neglect</strong> – when grown‑ups forget to give food, clothes, or take a child to the doctor.<br>
+                        • <strong>Munchausen by proxy</strong> – when a caregiver makes a child sick on purpose to get attention.</p>
+                        <p class="mt-3">🩺 Nurses and doctors are like superheroes – they <strong>must tell someone</strong> (like social workers or police) so the child can be safe.</p>
+                    </div>
+                    <div class="bg-red-50 p-5 rounded-xl text-center mt-4">
+                        <i class="fa-solid fa-shield-heart text-6xl text-abuse"></i>
+                        <p class="font-bold mt-2">You can help by telling a trusted adult</p>
+                        <div class="flex justify-center gap-4 mt-2 text-sm">
+                            <div><span class="inline-block w-4 h-4 bg-red-500 rounded-full"></span> Teacher</div>
+                            <div><span class="inline-block w-4 h-4 bg-red-500 rounded-full"></span> Nurse</div>
+                            <div><span class="inline-block w-4 h-4 bg-red-500 rounded-full"></span> Police</div>
+                        </div>
+                    </div>
+                    <button onclick="openQuiz('simple')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- Definition & Epidemiology -->
+            <section id="definition" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-abuse pb-3"><i class="fa-solid fa-book-open text-abuse mr-4"></i> Definition & Epidemiology</h2>
+                    <p><strong>Child abuse</strong> – any act or failure to act that results in serious physical or emotional harm, sexual abuse, or exploitation of a child under 18 years. Philippine law (RA 7610) defines child abuse as "the maltreatment of a child, whether habitual or not, including psychological and physical abuse, neglect, and sexual abuse."</p>
+                    <div class="grid md:grid-cols-2 gap-5 mt-4">
+                        <div class="bg-slate-50 p-4 rounded-xl"><strong>📊 Global prevalence (WHO)</strong><br><span class="reveal-text">• Physical abuse: 22.6% of children worldwide<br>• Emotional abuse: 36.3%<br>• Neglect: 16.3%<br>• Sexual abuse: 12.7% (girls), 7.6% (boys)</span></div>
+                        <div class="bg-slate-50 p-4 rounded-xl"><strong>🇵🇭 Philippines (UNICEF, DOH)</strong><br><span class="reveal-text">• 1 in 2 children experience some form of violence (2015 National Baseline Study).<br>• Most common: physical discipline (59%), psychological aggression (50%), neglect (17%).<br>• Online sexual exploitation of children (OSEC) is a growing crisis – Philippines is a global epicenter.</span></div>
+                    </div>
+                    <canvas id="abuseChart" width="400" height="200" style="max-width:100%; margin-top:1rem;"></canvas>
+                    <div class="bg-red-50 p-3 rounded-lg mt-4"><strong>⚠️ Key point:</strong> <span class="reveal-text">Child abuse often occurs in the family environment, and perpetrators are usually known to the child. Mandatory reporting by nurses is required by Philippine law (RA 7610, RA 9262).</span></div>
+                    <button onclick="openQuiz('definition')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- Types of Child Abuse -->
+            <section id="types" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-abuse pb-3"><i class="fa-solid fa-list text-abuse mr-4"></i> Types of Child Abuse</h2>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div><strong>✋ Physical abuse</strong><br><span class="reveal-text">Non‑accidental physical injury (hitting, shaking, burning, biting, fractures). Shaken baby syndrome is a severe form.</span></div>
+                        <div><strong>😢 Emotional abuse</strong><br><span class="reveal-text">Rejection, isolation, terrorizing, ignoring, verbal assault. Often accompanies other forms. Long‑term psychological damage.</span></div>
+                        <div><strong>🔞 Sexual abuse</strong><br><span class="reveal-text">Any sexual act with a child (molestation, rape, exploitation, pornography, online sexual abuse). Includes non‑contact acts (exhibitionism, grooming).</span></div>
+                        <div><strong>🏠 Neglect</strong><br><span class="reveal-text">Failure to provide basic needs: food, shelter, clothing, medical care, education, supervision. Most common but under‑reported.</span></div>
+                        <div><strong>🏥 Munchausen by proxy (factitious disorder imposed on another)</strong><br><span class="reveal-text">Caregiver (usually mother) fabricates or induces illness in a child to gain medical attention. Diagnostic clue: symptoms disappear when child separated from caregiver.</span></div>
+                    </div>
+                    <div class="bg-amber-50 p-3 rounded-lg mt-4"><strong>📌 Pillitteri note:</strong> <span class="reveal-text">Any injury that is inconsistent with the history given or with the child's developmental stage should raise suspicion of abuse.</span></div>
+                    <button onclick="openQuiz('types')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- Clinical Features & Red Flags -->
+            <section id="clinical" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-abuse pb-3"><i class="fa-solid fa-stethoscope text-abuse mr-4"></i> Clinical Features & Red Flags</h2>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div><strong>🔴 Physical abuse red flags</strong><br><span class="reveal-text">• Bruises in various stages of healing, pattern injuries (belt, hand, cigarette burns)<br>• Fractures in non‑ambulatory infant (ribs, metaphyseal corner fractures)<br>• Retinal hemorrhages, subdural hematomas (shaken baby)<br>• Delay in seeking care, inconsistent or changing history</span></div>
+                        <div><strong>🔴 Behavioral signs (all types)</strong><br><span class="reveal-text">• Fear of going home or of parents<br>• Aggression, withdrawal, developmental regression<br>• Sexualized behaviour, knowledge beyond age<br>• Self‑harm, suicidal ideation (older children)<br>• Poor school performance, chronic absenteeism</span></div>
+                    </div>
+                    <div class="bg-green-50 p-3 rounded-lg mt-4"><strong>🔍 Suspicious injury patterns:</strong> <span class="reveal-text">Posterior trunk, buttocks, cheeks, ears, frenulum tears, genital area. Any injury in an infant not yet crawling or walking should be investigated.</span></div>
+                    <button onclick="openQuiz('clinical')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- Diagnosis & Reporting -->
+            <section id="diagnosis" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-abuse pb-3"><i class="fa-solid fa-microscope text-abuse mr-4"></i> Diagnosis & Mandatory Reporting</h2>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li><strong>History taking:</strong> <span class="reveal-text">Interview child alone (age‑appropriate), use open‑ended questions, avoid leading questions. Document exact words.</span></li>
+                        <li><strong>Physical examination:</strong> <span class="reveal-text">Head‑to‑toe with careful documentation of injuries (body map, photography).</span></li>
+                        <li><strong>Diagnostic tests:</strong> <span class="reveal-text">Skeletal survey for suspected physical abuse in children under 2 years. CT/MRI for head trauma. Coagulation studies to rule out bleeding disorders.</span></li>
+                        <li><strong>Reporting (Philippine law):</strong> <span class="reveal-text">RA 7610 (Special Protection of Children Against Abuse) and RA 9262 (Anti‑Violence Against Women and Their Children Act) mandate that any person who has knowledge of child abuse must report to the Department of Social Welfare and Development (DSWD) or law enforcement. Failure to report may result in legal liability.</span></li>
+                    </ul>
+                    <div class="legal-box mt-4"><strong>⚖️ Legal duty of nurses:</strong> <span class="reveal-text">Nurses are mandatory reporters. Report within 48 hours to the nearest DSWD office or barangay. The report must include the child's identity, circumstances, and any supporting evidence. Good faith reporting is protected.</span></div>
+                    <button onclick="openQuiz('diagnosis')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- Management & Nursing Care -->
+            <section id="management" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-abuse pb-3"><i class="fa-solid fa-hand-holding-medical text-abuse mr-4"></i> Management & Nursing Care</h2>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div><strong>👩‍⚕️ Immediate medical care</strong><br><span class="reveal-text">• Treat acute injuries (fractures, head trauma, burns)<br>• STI prophylaxis and pregnancy testing for sexual abuse<br>• Forensic evidence collection (rape kit) with proper chain of custody<br>• Provide emotional support and safety planning</span></div>
+                        <div><strong>🧠 Long‑term nursing interventions</strong><br><span class="reveal-text">• Coordinate with multidisciplinary team (social worker, psychologist, legal advocate)<br>• Provide trauma‑informed care – build trust, avoid re‑traumatisation<br>• Educate child about body safety, "good touch – bad touch"<br>• Support foster placement or safe family reunification<br>• Document everything objectively, use direct quotes</span></div>
+                    </div>
+                    <div class="bg-rose-50 p-3 rounded-lg mt-4"><strong>📌 Pillitteri priority:</strong> <span class="reveal-text">"The nurse's first responsibility is to ensure the child's immediate safety. Remove the child from the abusive environment if necessary, following legal protocols."</span></div>
+                    <button onclick="openQuiz('management')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- Prevention & Legal Aspects -->
+            <section id="prevention" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-abuse pb-3"><i class="fa-solid fa-shield-heart text-abuse mr-4"></i> Prevention & Legal Aspects (RA 7610, RA 9262)</h2>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div><strong>🛡️ Primary prevention strategies</strong><br><span class="reveal-text">• Parent education (positive discipline, child development, stress management)<br>• Home visitation programmes (nurse‑family partnership)<br>• School‑based body safety programmes<br>• Community awareness campaigns against child abuse<br>• Strengthening family economic supports</span></div>
+                        <div><strong>⚖️ Philippine laws protecting children</strong><br><span class="reveal-text">• RA 7610 (1992): Special Protection of Children Against Abuse, Exploitation and Discrimination Act – penalises physical, sexual, and psychological abuse.<br>• RA 9262 (2004): Anti‑Violence Against Women and Their Children Act – includes protection orders, criminalises psychological violence.<br>• RA 9775: Anti‑Child Pornography Act.<br>• RA 11930: Anti‑Online Sexual Abuse or Exploitation of Children (OSAEC) Act.</span></div>
+                    </div>
+                    <div class="legal-box mt-4"><strong>📞 Reporting hotline (Philippines):</strong> <span class="reveal-text">DSWD National Child Protection Hotline: 0939-112-1662 / 0931-016-1931. Aling Bata (Child Helpline) 163. Nurse's role: document, report, do not investigate beyond gathering necessary medical information.</span></div>
+                    <button onclick="openQuiz('prevention')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Next</button>
+                </div>
+            </section>
+
+            <!-- Flashcards & Mnemonics -->
+            <section id="flashcards" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-4 border-b-2 border-abuse pb-3"><i class="fa-solid fa-cards text-abuse mr-4"></i> Flashcards & Mnemonics</h2>
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-abuse">Q: Most common form of child abuse?</div><div class="flash-answer hidden mt-2">Neglect (most common but under‑reported). Physical abuse more frequently detected.</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-abuse">Q: Philippine law against child abuse</div><div class="flash-answer hidden mt-2">RA 7610 (Special Protection of Children Against Abuse, Exploitation and Discrimination Act)</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-abuse">Q: Shaken baby syndrome triad</div><div class="flash-answer hidden mt-2">Retinal hemorrhages, subdural hematomas, and encephalopathy</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-abuse">Q: Pattern injury suspicious for abuse</div><div class="flash-answer hidden mt-2">Belt marks, cigarette burns, bite marks, immersion burns (glove‑stocking)</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-abuse">Q: Munchausen by proxy clue</div><div class="flash-answer hidden mt-2">Symptoms resolve when child separated from caregiver</div></div>
+                        <div class="flashcard p-4" onclick="toggleFlash(this)"><div class="font-bold text-abuse">Q: Mandatory reporting timeframe</div><div class="flash-answer hidden mt-2">Immediately, but within 48 hours to DSWD under RA 7610</div></div>
+                    </div>
+                    <div class="mt-6 bg-red-50 p-4 rounded-xl"><strong>🧠 Mnemonics</strong><br><span class="reveal-text">“T.E.N.S.” – Types: Physical, Emotional, Neglect, Sexual.<br>“M.A.P.” – Munchausen by proxy, Abuse, Physical evidence.<br>“S.H.A.K.E.N.” – Subdural hematoma, Hypoxia, Altered consciousness, Kiss of baby (retinal hemorrhage), Encephalopathy, Neurologic injury.<br>“C.A.R.E.” – Collect history, Assess injuries, Report to DSWD, Educate family.</span></div>
+                    <button onclick="openQuiz('flashcards')" class="mt-6 w-full bg-slate-800 text-white font-black py-3 rounded-xl">Take Quiz → Unlock Final Exam</button>
+                </div>
+            </section>
+
+            <!-- FINAL EXAM SECTION -->
+            <section id="final_quiz_sec" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 text-center min-h-[60vh] flex flex-col justify-center items-center">
+                    <i class="fa-solid fa-graduation-cap text-8xl text-amber-500 mb-6"></i>
+                    <h2 class="text-4xl font-black text-slate-800 mb-4">Final 50‑Item Exam: Child Abuse</h2>
+                    <p class="text-lg text-slate-600 mb-8 max-w-2xl">Covers definition, epidemiology, types, clinical features, red flags, diagnosis, mandatory reporting, management, nursing care, prevention, and Philippine laws (RA 7610, RA 9262). Score ≥75% to pass.</p>
+                    <button onclick="openQuiz('final_quiz')" class="w-full max-w-md bg-slate-800 text-white font-black py-4 rounded-xl shadow-md text-xl">Start Final Exam</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- QUIZ MODAL -->
+    <div id="quiz-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl p-6 md:p-8 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeQuiz()" class="absolute top-4 right-4 text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            <h2 id="quiz-title" class="text-3xl font-black text-slate-800 mb-2"></h2>
+            <div id="quiz-questions-container" class="space-y-4 mt-4"></div>
+            <button id="quiz-submit-btn" onclick="submitQuiz()" class="mt-8 w-full bg-abuse text-white font-bold py-4 rounded-xl shadow-lg">Submit Answers</button>
+            <div id="quiz-result-container" class="hidden mt-6 p-4 rounded-xl bg-slate-100"></div>
+        </div>
+    </div>
+
+    <script>
+        // QUIZ DATA (10 questions each for sections)
+        const quizzes = {
+            simple: { title: "Child Abuse Like You're 5", next: "definition", questions: [
+                { q: "When someone hits a child and causes bruises, that is called:", options: ["Physical abuse","Emotional abuse","Neglect","Sexual abuse"], ans: 0 },
+                { q: "When a caregiver forgets to give a child food or medicine, that is:", options: ["Physical abuse","Neglect","Sexual abuse","Emotional abuse"], ans: 1 },
+                { q: "Who must nurses report child abuse to?", options: ["Nobody","Only the parents","DSWD or police","The child's teacher"], ans: 2 },
+                { q: "Munchausen by proxy means:", options: ["Parent makes child sick on purpose","Child lies about being sick","Doctor makes a mistake","Hospital error"], ans: 0 },
+                { q: "A child who is constantly called 'stupid' and 'worthless' is experiencing:", options: ["Physical abuse","Emotional abuse","Neglect","Sexual abuse"], ans: 1 }
+            ] },
+            definition: { title: "Definition & Epidemiology", next: "types", questions: [
+                { q: "The Philippine law that specifically protects children from abuse is:", options: ["RA 7610","RA 9262","RA 9775","RA 11930"], ans: 0 },
+                { q: "According to WHO global estimates, the most prevalent form of child abuse is:", options: ["Physical abuse","Emotional abuse","Sexual abuse","Neglect"], ans: 1 },
+                { q: "In the Philippines, the 2015 National Baseline Study found that what percentage of children experienced physical discipline?", options: ["59%","36%","17%","12%"], ans: 0 },
+                { q: "Which country is considered a global epicenter of online sexual exploitation of children (OSEC)?", options: ["Philippines","USA","Thailand","India"], ans: 0 },
+                { q: "Child abuse is defined by Philippine law as maltreatment of a child, whether habitual or not, including:", options: ["Physical and psychological abuse, neglect, sexual abuse","Only physical abuse","Only neglect","Only sexual abuse"], ans: 0 }
+            ] },
+            types: { title: "Types of Child Abuse", next: "clinical", questions: [
+                { q: "Which type of abuse is most commonly under‑reported but also most common?", options: ["Physical abuse","Neglect","Sexual abuse","Emotional abuse"], ans: 1 },
+                { q: "Factitious disorder imposed on another is also known as:", options: ["Munchausen by proxy","Shaken baby syndrome","Neglect","Emotional abuse"], ans: 0 },
+                { q: "A caregiver who locks a child in a closet for hours is committing:", options: ["Physical abuse","Neglect and physical abuse","Emotional abuse only","Sexual abuse"], ans: 1 },
+                { q: "Which type of abuse includes exhibitionism and online grooming?", options: ["Physical","Emotional","Sexual","Neglect"], ans: 2 },
+                { q: "A parent who fails to bring a child for needed medical care is committing:", options: ["Medical neglect","Physical abuse","Emotional abuse","Sexual abuse"], ans: 0 }
+            ] },
+            clinical: { title: "Clinical Features & Red Flags", next: "diagnosis", questions: [
+                { q: "In an infant not yet crawling, which injury should raise highest suspicion for abuse?", options: ["Fractured femur","Bruises on shins","Cigarette burn on hand","Metaphyseal corner fracture"], ans: 3 },
+                { q: "The classic triad of shaken baby syndrome includes:", options: ["Retinal hemorrhages, subdural hematomas, encephalopathy","Fractures, burns, bruises","Dehydration, malnutrition, failure to thrive","Sexual behavior, STI, pregnancy"], ans: 0 },
+                { q: "A history that 'the child fell down the stairs' but has a spiral fracture of the femur is an example of:", options: ["Consistent history","Inconsistent history (red flag)","Normal finding","Accidental injury"], ans: 1 },
+                { q: "Which behavioral sign is most suggestive of sexual abuse in a young child?", options: ["Regression to thumb‑sucking","Sexualized play or knowledge beyond age","Nightmares","Aggression"], ans: 1 },
+                { q: "Pattern injuries that match an object (e.g., belt, coat hanger) are highly suspicious for:", options: ["Accidental falls","Physical abuse","Genetic disorder","Infectious rash"], ans: 1 }
+            ] },
+            diagnosis: { title: "Diagnosis & Reporting", next: "management", questions: [
+                { q: "The recommended imaging study for suspected physical abuse in a child under 2 years is:", options: ["Skeletal survey","Single X‑ray of injured area","CT head only","Ultrasound"], ans: 0 },
+                { q: "Under RA 7610, who is required to report child abuse?", options: ["Only doctors","Only teachers","Any person who has knowledge","Only parents"], ans: 2 },
+                { q: "The government agency in the Philippines responsible for child protection is:", options: ["DSWD","DOH","DepEd","PNP"], ans: 0 },
+                { q: "Which test can help differentiate accidental bruising from abusive bruising?", options: ["Coagulation studies","Complete blood count","Liver function tests","Blood culture"], ans: 0 },
+                { q: "When interviewing a suspected abused child, the nurse should:", options: ["Use leading questions","Interview alone and use open‑ended questions","Interview with the parent present","Record the interview on video without consent"], ans: 1 }
+            ] },
+            management: { title: "Management & Nursing Care", next: "prevention", questions: [
+                { q: "The nurse's first priority in suspected child abuse is:", options: ["Gather evidence","Ensure immediate safety of the child","Call the parents","Discharge the child home"], ans: 1 },
+                { q: "Forensic evidence collection for sexual abuse should follow:", options: ["Chain of custody","Standard lab protocol","Parental permission only","No special procedure"], ans: 0 },
+                { q: "For a child with Munchausen by proxy, the nurse should:", options: ["Confront the parent","Observe symptoms when parent is present vs absent","Discharge immediately","Ignore suspicious findings"], ans: 1 },
+                { q: "Trauma‑informed care involves:", options: ["Avoiding re‑traumatisation, building trust","Asking detailed repetitive questions","Using physical restraints","Separating child from all caregivers"], ans: 0 },
+                { q: "Documentation of suspected abuse should include:", options: ["Objectively observed injuries, direct quotes","Nurse's opinion of guilt","Speculation about perpetrator","Deleted notes"], ans: 0 }
+            ] },
+            prevention: { title: "Prevention & Legal Aspects", next: "flashcards", questions: [
+                { q: "RA 9262 is also known as:", options: ["Anti‑Violence Against Women and Their Children Act","Child Protection Act","Cybercrime Act","Family Code"], ans: 0 },
+                { q: "Which of the following is a primary prevention strategy for child abuse?", options: ["Parent education on positive discipline","Reporting confirmed cases","Prosecuting offenders","Foster care placement"], ans: 0 },
+                { q: "The Philippine hotline 'Aling Bata' is for:", options: ["Child protection","Fire emergencies","Police non‑emergency","Medical advice"], ans: 0 },
+                { q: "A nurse who fails to report suspected child abuse may face:", options: ["Legal liability under RA 7610","No consequence","Only verbal warning","Civil lawsuit only"], ans: 0 },
+                { q: "RA 11930 addresses:", options: ["Anti‑Online Sexual Abuse or Exploitation of Children","Anti‑Child Marriage","Anti‑Bullying","Anti‑Child Labor"], ans: 0 }
+            ] },
+            flashcards: { title: "Flashcards & Mnemonics", next: "final_quiz_sec", questions: [
+                { q: "Law mandating reporting of child abuse in the Philippines", options: ["RA 7610","RA 9262","RA 9775","RA 11313"], ans: 0 },
+                { q: "Shaken baby syndrome triad", options: ["Retinal hemorrhage, subdural hematoma, encephalopathy","Bruises, fractures, burns","Fever, vomiting, seizure","Poor feeding, failure to thrive, dehydration"], ans: 0 },
+                { q: "Mnemonic for types of child abuse", options: ["T.E.N.S.","C.A.R.E.","S.H.A.K.E.N.","M.A.P."], ans: 0 },
+                { q: "Most common form of child abuse", options: ["Neglect","Physical","Sexual","Emotional"], ans: 0 },
+                { q: "Anti‑Violence Against Women and Their Children Act is:", options: ["RA 9262","RA 7610","RA 9775","RA 11930"], ans: 0 }
+            ] }
+        };
+        // Build final 50-item exam
+        let finalQ = [];
+        for(let sec of ['simple','definition','types','clinical','diagnosis','management','prevention','flashcards']) {
+            if(quizzes[sec]) finalQ.push(...quizzes[sec].questions.slice(0,6));
+        }
+        while(finalQ.length < 50) finalQ.push({ q: "The most important action for a nurse who suspects child abuse is:", options: ["Confront the caregiver","Document findings and report to DSWD","Treat injuries and discharge","Call the police to arrest"], ans: 1 });
+        quizzes.final_quiz = { title: "Final 50-Item Exam: Child Abuse", next: null, questions: finalQ };
+
+        let unlockedSections = ['home'];
+        let abuseChart = null;
+
+        function initCharts() {
+            const ctx = document.getElementById('abuseChart')?.getContext('2d');
+            if(ctx && !abuseChart) {
+                abuseChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Physical abuse', 'Emotional abuse', 'Neglect', 'Sexual abuse'],
+                        datasets: [{ label: 'Global prevalence (%)', data: [22.6, 36.3, 16.3, 12.7], backgroundColor: '#b91c1c', borderRadius: 6 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } } }
+                });
+            }
+        }
+
+        function toggleFlash(el) { const ans = el.querySelector('.flash-answer'); if(ans) ans.classList.toggle('hidden'); }
+        function unlockFirstSection() { if(!unlockedSections.includes('simple')) { unlockedSections.push('simple'); updateSidebarUI(); } showSection('simple'); }
+        function showSection(sectionId) {
+            if (!unlockedSections.includes(sectionId) && sectionId !== 'home') { alert("Complete the Active Recall Quiz at the bottom of the previous section to unlock."); return; }
+            document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(sectionId)?.classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('bg-abuse-light','text-abuse-dark','border-r-4','border-abuse-dark'));
+            const activeBtn = document.getElementById('btn-'+sectionId);
+            if(activeBtn) activeBtn.classList.add('bg-abuse-light','text-abuse-dark','border-r-4','border-abuse-dark');
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
+            if(sectionId === 'definition' && !abuseChart) setTimeout(initCharts, 50);
+        }
+        function updateSidebarUI() {
+            const sections = ['home','simple','definition','types','clinical','diagnosis','management','prevention','flashcards','final_quiz_sec'];
+            sections.forEach(sec => {
+                const btn = document.getElementById('btn-'+sec);
+                if(!btn) return;
+                const lock = btn.querySelector('.fa-lock'), icon = btn.querySelector('.nav-icon');
+                if(unlockedSections.includes(sec) || sec==='home') { btn.classList.remove('locked-section'); if(lock) lock.classList.add('hidden'); if(icon) icon.classList.remove('hidden'); }
+                else { btn.classList.add('locked-section'); if(lock) lock.classList.remove('hidden'); if(icon) icon.classList.add('hidden'); }
+            });
+        }
+        let currentQuiz=null;
+        function openQuiz(sectionId) { currentQuiz = sectionId; const qd = quizzes[sectionId]; if(!qd) return; document.getElementById('quiz-title').innerHTML = qd.title; const container = document.getElementById('quiz-questions-container'); container.innerHTML = ''; qd.questions.forEach((q, idx) => { let html = `<div class="bg-slate-50 p-4 rounded-xl mb-4"><p class="font-bold mb-3">${idx+1}. ${q.q}</p><div class="space-y-2">`; q.options.forEach((opt,oi) => { html += `<label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white cursor-pointer"><input type="radio" name="q${idx}" value="${oi}" class="form-radio text-abuse"><span>${opt}</span></label>`; }); html += `</div><div class="feedback-${idx} text-sm mt-2 hidden"></div></div>`; container.innerHTML += html; }); document.getElementById('quiz-submit-btn').classList.remove('hidden'); document.getElementById('quiz-result-container').classList.add('hidden'); document.getElementById('quiz-modal').classList.remove('hidden'); }
+        function closeQuiz() { document.getElementById('quiz-modal').classList.add('hidden'); }
+        function submitQuiz() {
+            const qd = quizzes[currentQuiz];
+            if(!qd) return;
+            let score = 0;
+            for(let i=0; i<qd.questions.length; i++) {
+                const sel = document.querySelector(`input[name="q${i}"]:checked`);
+                if(sel && parseInt(sel.value)===qd.questions[i].ans) score++;
+                const fbDiv = document.querySelector(`.feedback-${i}`);
+                if(fbDiv){
+                    fbDiv.classList.remove('hidden');
+                    const correctTxt = qd.questions[i].options[qd.questions[i].ans];
+                    if(sel && parseInt(sel.value)===qd.questions[i].ans) { fbDiv.innerHTML='<span class="text-green-700">✓ Correct</span>'; fbDiv.parentElement?.classList.add('quiz-feedback-correct'); }
+                    else { const selectedTxt = sel? qd.questions[i].options[parseInt(sel.value)]:"No answer"; fbDiv.innerHTML=`<span class="text-red-700">✗ Incorrect. Correct: ${correctTxt}. You answered: ${selectedTxt}</span>`; fbDiv.parentElement?.classList.add('quiz-feedback-wrong'); }
+                }
+            }
+            let percent = (score/qd.questions.length)*100;
+            let resultDiv = document.getElementById('quiz-result-container');
+            document.getElementById('quiz-submit-btn').classList.add('hidden');
+            resultDiv.classList.remove('hidden');
+            if(percent>=75){
+                if(currentQuiz==='final_quiz'){ resultDiv.innerHTML=`<div class="text-green-600 text-4xl text-center">🎉 Excellent! Score ${score}/${qd.questions.length} (${percent}%)<br>You mastered Child Abuse!</div><button onclick="closeQuiz()" class="mt-4 bg-abuse text-white px-6 py-2 rounded-xl">Close</button>`; return; }
+                if(quizzes[currentQuiz].next && !unlockedSections.includes(quizzes[currentQuiz].next)) unlockedSections.push(quizzes[currentQuiz].next);
+                if(quizzes[currentQuiz].next === 'flashcards' && !unlockedSections.includes('final_quiz_sec')) unlockedSections.push('final_quiz_sec');
+                updateSidebarUI();
+                resultDiv.innerHTML=`<div class="text-green-600 text-3xl text-center">✅ Passed! (${score}/${qd.questions.length})</div><button onclick="closeQuiz(); showSection('${quizzes[currentQuiz].next}')" class="mt-4 bg-green-600 text-white px-6 py-2 rounded-xl">Unlock Next Section</button>`;
+            } else { resultDiv.innerHTML=`<div class="text-red-600 text-3xl text-center">❌ Failed: ${score}/${qd.questions.length} (${percent}%)<br>Need 75%</div><button onclick="openQuiz('${currentQuiz}')" class="mt-4 bg-slate-600 text-white px-6 py-2 rounded-xl">Try Again</button>`; }
+        }
+        function toggleRecallMode() { const active = !document.body.classList.contains('recall-mode'); const toggle=document.getElementById('recall-toggle'),knob=document.getElementById('recall-knob'); if(active){ document.body.classList.add('recall-mode'); toggle.classList.add('bg-abuse-dark'); knob.classList.add('translate-x-6'); } else { document.body.classList.remove('recall-mode'); toggle.classList.remove('bg-abuse-dark'); knob.classList.remove('translate-x-6'); } }
+        function toggleMobileMenu() { const s=document.getElementById('sidebar'); if(s.classList.contains('hidden')) s.classList.remove('hidden','flex','absolute','h-full','z-50'); else s.classList.add('hidden'); }
+        document.addEventListener('DOMContentLoaded', () => { updateSidebarUI(); document.querySelectorAll('.reveal-text').forEach(el => el.addEventListener('click', function(){ if(document.body.classList.contains('recall-mode')) this.classList.toggle('revealed'); })); });
+    </script>
+</body>
+</html>
